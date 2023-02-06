@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
 import LayerVector from 'ol/layer/Vector';
 import SourceVector from 'ol/source/Vector';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
 import proj from 'ol/proj';
+import proj4 from 'proj4';
 
 import { VARS, TARGET_TYPE, PROVIDERS, EVENT_TYPE } from '../konstants';
 
@@ -71,10 +73,10 @@ export class Nominatim {
       const hit = evt.key
         ? evt.key === 'Enter'
         : evt.which
-        ? evt.which === 13
-        : evt.keyCode
-        ? evt.keyCode === 13
-        : false;
+          ? evt.which === 13
+          : evt.keyCode
+            ? evt.keyCode === 13
+            : false;
 
       if (hit) {
         evt.preventDefault();
@@ -84,6 +86,13 @@ export class Nominatim {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const stopBubbling = (evt) => evt.stopPropagation();
     const reset = (evt) => {
+      const map = this.Base.getMap();
+
+      // remove the old marker icon layer
+      map.getLayers().getArray()
+        .filter(layer => layer.get('name') === 'Marker')
+        .forEach(layer => map.removeLayer(layer));
+
       this.els.input.focus();
       this.els.input.value = '';
       this.lastQuery = '';
@@ -119,6 +128,49 @@ export class Nominatim {
   }
 
   query(q) {
+    // if coordinates are in the query, center the map on them
+    const possibleCoords = q.split(',');
+
+    // define EPSG for LV95
+    proj4.defs([
+      [
+        'EPSG:2056',
+        '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs'
+      ],
+    ]);
+
+
+
+    if (possibleCoords.length === 2 && !Number.isNaN(Number.parseFloat(possibleCoords[0].replaceAll("'", ""))) && !Number.isNaN(Number.parseFloat(possibleCoords[1].replaceAll("'", "")))) {
+
+      let lat = Number.parseFloat(possibleCoords[0].replaceAll("'", ""));
+      let lon = Number.parseFloat(possibleCoords[1].replaceAll("'", ""));
+
+      if (!Number.isNaN(lat) && !Number.isNaN(lon)) {
+
+        // small ugly hack to differentiate between WGS84 and LV95
+        if (lat > 90 && lon > 180) {
+          // coordinates are switched in LV95
+          lon = Number.parseFloat(possibleCoords[0].replaceAll("'", ""));
+          lat = Number.parseFloat(possibleCoords[1].replaceAll("'", ""));
+
+          const pt = proj4('EPSG:2056', 'EPSG:4326', { x: lon, y: lat });
+
+          lon = pt.x;
+          lat = pt.y;
+        }
+
+        const place = {
+          lon,
+          lat,
+        };
+
+        this.chosen(place, '', '', '');
+
+        return;
+      }
+    }
+
     // lazy provider
     if (!this.provider) {
       this.provider = this.newProvider();

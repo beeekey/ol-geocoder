@@ -64,6 +64,7 @@ Load CSS and Javascript:
 ```HTML
 <link href="https://cdn.jsdelivr.net/npm/ol-geocoder@latest/dist/ol-geocoder.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/ol-geocoder"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.8.1/proj4.min.js" integrity="sha512-JToqu2hzfiepDTg9LjkVzYhUhTcYGJIj2aGOn3Q+7sPVSi2n+vmpxISCbOJ2b3I4OQmqG0KQYovX6f3Rx+etAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 ```
 
 ##### CDN Hosted - UNPKG
@@ -71,6 +72,7 @@ Load CSS and Javascript:
 ```HTML
 <link href="https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css" rel="stylesheet">
 <script src="https://unpkg.com/ol-geocoder"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.8.1/proj4.min.js" integrity="sha512-JToqu2hzfiepDTg9LjkVzYhUhTcYGJIj2aGOn3Q+7sPVSi2n+vmpxISCbOJ2b3I4OQmqG0KQYovX6f3Rx+etAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 ```
 ##### Self hosted
 Download [latest release](https://github.com/jonataswalker/ol-geocoder/releases/latest) and (obviously) load CSS and Javascript.

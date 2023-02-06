@@ -18,6 +18,8 @@ const ol = [
   ['ol/geom/Point', 'ol.geom.Point'],
   ['ol/proj', 'ol.proj'],
   ['ol/Feature', 'ol.Feature'],
+  ['proj4', 'proj4'],
+  ['transform-coordinates', 'transform-coordinates'],
 ];
 
 ol.forEach((each) => {
